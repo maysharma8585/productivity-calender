@@ -1,4 +1,4 @@
-# 🧠 Smart Calendar App
+# 🧠 Smart Calendar App --- https://maysharma8585.github.io/productivity-calender/
 
 A modern full-stack calendar and task management web application designed to help users efficiently organize their schedule, manage tasks, and track important dates with a clean and interactive interface.
 
@@ -32,7 +32,7 @@ Backend:
 ## 🌐 Deployment
 
 - Frontend: GitHub Pages  
-- Backend: Render / Railway  
+- Backend: Render 
 
 > API endpoints are connected dynamically between frontend and backend after deployment.
 
