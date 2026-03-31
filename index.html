@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Premium Calendar App</title>
+    <style>
+      #app {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+      }
+      body.dark .today {
+        background: #14532d;
+        border-color: #22c55e;
+      }
+      .today .date {
+        font-weight: bold;
+        color: #16a34a;
+      }
+
+      /* 🔥 PREMIUM LOGIN PAGE */
+      #auth {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      }
+
+      .auth-card {
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        width: 320px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.5s ease;
+      }
+
+      .auth-card h2 {
+        margin-bottom: 20px;
+      }
+
+      .auth-card input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: 0.2s;
+      }
+
+      .auth-card input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 5px rgba(37, 99, 235, 0.4);
+      }
+
+      .auth-card button {
+        width: 100%;
+        margin-top: 12px;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .auth-card button:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* DARK MODE */
+      body.dark {
+        background: #0f172a;
+        color: white;
+      }
+
+      body.dark .main {
+        background: #0f172a;
+      }
+
+      body.dark .day {
+        background: #1e293b;
+        color: white;
+      }
+
+      body.dark .sidebar {
+        background: #020617;
+      }
+
+      body.dark .task {
+        background: #2563eb;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 220px;
+        background: #1e293b;
+        color: white;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      .sidebar-footer {
+        margin-top: auto;
+        font-size: 12px;
+        opacity: 0.7;
+        text-align: center;
+        align-items: center;
+      }
+
+      .sidebar button {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        border: none;
+        background: #3b82f6;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* Main */
+      .main {
+        flex: 1;
+        padding: 20px;
+        background: #f1f5f9;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .calendar {
+        margin-top: 20px;
+      }
+
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+      }
+
+      .day {
+        background: white;
+        border-radius: 10px;
+        padding: 10px;
+        min-height: 100px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        height: 110px;
+      }
+
+      .day:hover {
+        transform: scale(1.02);
+      }
+
+      .important {
+        border: 2px solid #ef4444;
+        background: #fee2e2;
+      }
+
+      .date {
+        font-weight: bold;
+      }
+
+      .task {
+        background: #3b82f6;
+        color: white;
+        margin-top: 5px;
+        padding: 3px;
+        border-radius: 5px;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+      }
+
+      .modal input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 10px;
+      }
+      .today {
+        border: 2px solid #22c55e;
+        background: #dcfce7;
+      }
+      .days-wrapper {
+        position: relative;
+        overflow: hidden;
+        min-height: calc(100vh - 200px);
+        transition: height 0.3s ease;
+      }
+
+      .days {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 15px;
+
+        transition: transform 0.35s ease;
+      }
+
+      /* Slide animations */
+      .slide-left {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+
+      .slide-right {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      .color-box {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        border-radius: 6px;
+        margin: 5px;
+        cursor: pointer;
+        border: 2px solid transparent;
+      }
+
+      .color-box.selected {
+        border: 2px solid black;
+      }
+      /* @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 12px;
+        }
+
+        .sidebar h2 {
+          font-size: 16px;
+          margin: 0;
+        }
+
+        .sidebar button {
+          font-size: 11px;
+          padding: 5px 8px;
+          margin: 0 3px;
+        }
+
+        .sidebar-footer {
+          display: none;
+        }
+      }
+      @media (max-width: 768px) {
+        .header {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .header-top,
+        .header-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .header h2 {
+          font-size: 16px;
+          text-align: center;
+          flex: 1;
+        }
+      }
+      @media (max-width: 768px) {
+        .main {
+          padding: 10px;
+        }
+
+        .calendar {
+          width: 100%;
+        }
+
+        .days-wrapper {
+          min-height: auto;
+        }
+
+        .day {
+          min-height: 70px;
+          height: auto;
+        }
+      }
+      @media (max-width: 768px) {
+        body,
+        #app {
+          height: auto;
+        }
+
+        .main {
+          flex: none;
+        }
+      } */
+    </style>
+  </head>
+  <body>
+    <div id="auth">
+      <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <input id="username" placeholder="Username" />
+        <input id="password" type="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <button onclick="signup()">Create Account</button>
+      </div>
+    </div>
+
+    <div id="app" style="display: none">
+      <div class="sidebar">
+        <h2>My Calendar</h2>
+        <button onclick="toggleDark()">🌙 Dark Mode</button>
+        <button onclick="logout()">🚪 Logout</button>
+        <div class="sidebar-footer">Made by Mayank 🚀</div>
+      </div>
+
+      <div class="main">
+        <div class="header">
+          <select id="filter">
+            <option value="All">All</option>
+            <option value="Work">Work</option>
+            <option value="Study">Study</option>
+            <option value="Personal">Personal</option>
+            <option value="Health">Health</option>
+          </select>
+          <button onclick="prevMonth()">◀</button>
+          <h2 id="month"></h2>
+          <button onclick="nextMonth()">▶</button>
+          <button onclick="goToToday()">📍 Today</button>
+        </div>
+
+        <div class="calendar">
+          <div class="days-wrapper" id="daysWrapper">
+            <div class="days" id="daysCurrent"></div>
+            <div class="days" id="daysNext"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="modal">
+        <div class="modal-content">
+          <h3 id="modalDate"></h3>
+          <input type="time" id="reminderTime" />
+          <input id="taskInput" placeholder=" Task" />
+          <select id="category">
+            <option value="Work">Work</option>
+            <option value="Study">Study</option>
+            <option value="Personal">Personal</option>
+            <option value="Health">Health</option>
+          </select>
+
+          <br />
+
+          <label>Pick Color:</label>
+          <div id="colorPicker">
+            <span
+              class="color-box"
+              data-color="#3b82f6"
+              style="background: #3b82f6"
+            ></span>
+            <span
+              class="color-box"
+              data-color="#ef4444"
+              style="background: #ef4444"
+            ></span>
+            <span
+              class="color-box"
+              data-color="#22c55e"
+              style="background: #22c55e"
+            ></span>
+            <span
+              class="color-box"
+              data-color="#eab308"
+              style="background: #eab308"
+            ></span>
+            <span
+              class="color-box"
+              data-color="#a855f7"
+              style="background: #a855f7"
+            ></span>
+          </div>
+          <button type="button" onclick="addTask()">Add</button>
+          <button type="button" onclick="markImportant()">Important</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let date = new Date();
+      let selectedKey = null;
+      let tasks = {};
+      let importantDays = {};
+      let selectedFilter = "All";
+      let selectedColor = "#3b82f6"; // default
+
+      async function loadData() {
+        const res = await fetch(`http://localhost:3000/data/${currentUser}`);
+        const data = await res.json();
+
+        console.log("DATA FROM SERVER:", data);
+
+        tasks = data.tasks || {};
+        importantDays = data.important || {};
+
+        render("daysCurrent"); // ✅ correct place
+      }
+
+      async function saveData() {
+        await fetch(`http://localhost:3000/save/${currentUser}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tasks, important: importantDays }),
+        });
+      }
+
+      function render(targetId = "daysCurrent") {
+        const daysEl = document.getElementById(targetId);
+        daysEl.innerHTML = "";
+        applyTheme();
+
+        const y = date.getFullYear();
+        const m = date.getMonth();
+
+        document.getElementById("month").innerText = date.toLocaleString(
+          "default",
+          { month: "long", year: "numeric" },
+        );
+
+        const first = new Date(y, m, 1).getDay();
+        const last = new Date(y, m + 1, 0).getDate();
+
+        for (let i = 0; i < first; i++) {
+          daysEl.appendChild(document.createElement("div"));
+        }
+
+        for (let i = 1; i <= last; i++) {
+          const key = `${y}-${m + 1}-${i}`;
+
+          const day = document.createElement("div"); // ✅ create FIRST
+          day.className = "day";
+
+          // ✅ TODAY highlight (correct position)
+          const today = new Date();
+          if (
+            i === today.getDate() &&
+            m === today.getMonth() &&
+            y === today.getFullYear()
+          ) {
+            day.classList.add("today");
+          }
+
+          if (importantDays[key]) day.classList.add("important");
+
+          day.onclick = () => openModal(key, i, m, y);
+
+          const dateEl = document.createElement("div");
+          dateEl.className = "date";
+          dateEl.innerText = i;
+          day.appendChild(dateEl);
+
+          if (tasks[key]) {
+            tasks[key].forEach((t, idx) => {
+              const text = typeof t === "string" ? t : t.text;
+              const color = typeof t === "string" ? "#3b82f6" : t.color;
+              const category = typeof t === "string" ? "" : t.category;
+              const reminder = typeof t === "string" ? "" : t.reminder;
+
+              // ✅ SAFE FILTER LOGIC
+              if (selectedFilter !== "All" && category !== selectedFilter)
+                return;
+
+              const taskEl = document.createElement("div");
+              taskEl.className = "task";
+              taskEl.style.background = color;
+
+              const span = document.createElement("span");
+              span.innerText = text;
+
+              const del = document.createElement("button");
+              del.innerText = "x";
+              del.onclick = (e) => {
+                e.stopPropagation();
+                tasks[key].splice(idx, 1);
+                saveData();
+                render("daysCurrent");
+              };
+
+              taskEl.appendChild(span);
+
+              if (category) {
+                const cat = document.createElement("small");
+                cat.innerText = category;
+                cat.style.display = "block";
+                cat.style.fontSize = "10px";
+                taskEl.appendChild(cat);
+              }
+              if (t.reminder) {
+                const time = document.createElement("small");
+                time.innerText = "⏰ " + t.reminder;
+                time.style.display = "block";
+                time.style.fontSize = "10px";
+                taskEl.appendChild(time);
+              }
+
+              taskEl.appendChild(del);
+              day.appendChild(taskEl);
+            });
+          }
+
+          daysEl.appendChild(day);
+        }
+        updateWrapperHeight(targetId);
+      }
+
+      function openModal(key, d, m, y) {
+        selectedKey = key;
+        document.getElementById("modal").style.display = "flex";
+        document.getElementById("modalDate").innerText = `${d}/${m + 1}/${y}`;
+
+        const btn = document.querySelector("#modal button:last-of-type");
+
+        if (importantDays[key]) {
+          btn.innerText = "❌ Remove Important";
+        } else {
+          btn.innerText = "⭐ Mark Important";
+        }
+      }
+
+      async function addTask() {
+        const text = document.getElementById("taskInput").value;
+        const category = document.getElementById("category")?.value || "";
+        const color = selectedColor;
+        const reminder = document.getElementById("reminderTime").value;
+
+        if (!text) return;
+
+        if (!tasks[selectedKey]) tasks[selectedKey] = [];
+
+        tasks[selectedKey].push({ text, category, color, reminder });
+
+        // OPTIONAL: auto mark important
+        // importantDays[selectedKey] = true;
+
+        document.getElementById("taskInput").value = "";
+        document.getElementById("reminderTime").value = "";
+        selectedColor = "#3b82f6";
+        document
+          .querySelectorAll(".color-box")
+          .forEach((b) => b.classList.remove("selected"));
+
+        await saveData();
+
+        render("daysCurrent");
+
+        document.getElementById("modal").style.display = "none";
+      }
+
+      async function markImportant() {
+        if (importantDays[selectedKey]) {
+          delete importantDays[selectedKey]; // ❌ remove important
+        } else {
+          importantDays[selectedKey] = true; // ✅ add important
+        }
+
+        saveData();
+        render("daysCurrent");
+
+        document.getElementById("modal").style.display = "none";
+      }
+
+      function prevMonth() {
+        const current = document.getElementById("daysCurrent");
+        const next = document.getElementById("daysNext");
+
+        next.style.transform = "translateX(-100%)";
+
+        date.setMonth(date.getMonth() - 1);
+
+        render("daysNext");
+        updateWrapperHeight("daysNext");
+
+        next.offsetHeight;
+
+        current.style.transform = "translateX(100%)";
+        next.style.transform = "translateX(0)";
+
+        setTimeout(() => {
+          current.style.transform = "translateX(0)";
+          next.style.transform = "translateX(100%)";
+
+          current.innerHTML = next.innerHTML;
+          render("daysCurrent");
+          updateWrapperHeight("daysCurrent");
+        }, 350);
+      }
+      function nextMonth() {
+        const current = document.getElementById("daysCurrent");
+        const next = document.getElementById("daysNext");
+
+        // Move next to right
+        next.style.transform = "translateX(100%)";
+
+        // Update date first
+        date.setMonth(date.getMonth() + 1);
+
+        // Render next month in hidden layer
+        render("daysNext");
+        updateWrapperHeight("daysNext");
+
+        // Force reflow
+        next.offsetHeight;
+
+        // Animate
+        current.style.transform = "translateX(-100%)";
+        next.style.transform = "translateX(0)";
+
+        // Swap after animation
+        setTimeout(() => {
+          current.style.transform = "translateX(0)";
+          next.style.transform = "translateX(100%)";
+
+          current.innerHTML = next.innerHTML;
+          render("daysCurrent");
+          updateWrapperHeight("daysCurrent");
+        }, 350);
+      }
+
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      window.onclick = function (e) {
+        if (e.target.id === "modal") e.target.style.display = "none";
+      };
+
+      //loadData();
+
+      let currentUser = localStorage.getItem("user");
+
+      async function signup() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://localhost:3000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+        alert(data.message || data.error);
+      }
+
+      async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (data.message) {
+          currentUser = username;
+          localStorage.setItem("user", username);
+
+          document.getElementById("auth").style.display = "none";
+          document.getElementById("app").style.display = "flex";
+
+          loadData();
+        } else {
+          alert(data.error);
+        }
+      }
+      function logout() {
+        localStorage.removeItem("user");
+        currentUser = null;
+
+        document.getElementById("app").style.display = "none";
+        document.getElementById("auth").style.display = "flex";
+      }
+      if (currentUser) {
+        document.getElementById("auth").style.display = "none";
+        document.getElementById("app").style.display = "flex";
+        loadData();
+      }
+
+      function applyTheme() {
+        if (localStorage.getItem("theme") === "dark") {
+          document.body.classList.add("dark");
+        } else {
+          document.body.classList.remove("dark");
+        }
+      }
+      function goToToday() {
+        date = new Date();
+        render("daysCurrent");
+      }
+      function updateWrapperHeight(targetId = "daysCurrent") {
+        const wrapper = document.getElementById("daysWrapper");
+        const target = document.getElementById(targetId);
+
+        if (target && wrapper) {
+          wrapper.style.height = target.offsetHeight + "px";
+        }
+      }
+
+      setTimeout(() => {
+        const filterEl = document.getElementById("filter");
+        if (filterEl) {
+          filterEl.addEventListener("change", (e) => {
+            selectedFilter = e.target.value;
+            render("daysCurrent");
+          });
+        }
+      }, 0);
+      document.addEventListener("DOMContentLoaded", () => {
+        const filter = document.getElementById("filter");
+
+        if (filter) {
+          filter.addEventListener("change", (e) => {
+            selectedFilter = e.target.value;
+            render("daysCurrent");
+          });
+        }
+        if ("Notification" in window) {
+          Notification.requestPermission();
+        }
+      });
+
+      document.querySelectorAll(".color-box").forEach((box) => {
+        box.addEventListener("click", () => {
+          selectedColor = box.dataset.color;
+
+          document
+            .querySelectorAll(".color-box")
+            .forEach((b) => b.classList.remove("selected"));
+
+          box.classList.add("selected");
+        });
+      });
+
+      function checkReminders() {
+        const now = new Date();
+
+        const currentKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+        const currentTime =
+          now.getHours().toString().padStart(2, "0") +
+          ":" +
+          now.getMinutes().toString().padStart(2, "0");
+
+        if (tasks[currentKey]) {
+          tasks[currentKey].forEach((task) => {
+            if (task.reminder === currentTime && !task.notified) {
+              showNotification(task.text);
+              task.notified = true;
+            }
+          });
+        }
+      }
+
+      setInterval(checkReminders, 1000);
+
+      function showNotification(text) {
+        if (Notification.permission === "granted") {
+          new Notification("⏰ Reminder", {
+            body: text,
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

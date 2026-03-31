@@ -1,0 +1,161 @@
+{
+  "users": {
+    "mayank": "mayank",
+    "stop": "stop"
+  },
+  "tasks": {
+    "null": {},
+    "mayank": {
+      "2026-2-4": [
+        {
+          "text": "sdfasf",
+          "category": "Study",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-2-2": [],
+      "2026-2-10": [],
+      "2026-2-11": [
+        "mayank"
+      ],
+      "2026-2-12": [
+        ""
+      ],
+      "2026-2-23": [
+        ""
+      ],
+      "2026-2-9": [
+        {
+          "text": "gsd",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-2-3": [
+        {
+          "text": "sdgfsd",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-4": [
+        {
+          "text": "sdrgsdf",
+          "category": "Study",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-5": [
+        {
+          "text": "adsfasdf",
+          "category": "Study",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-3": [
+        {
+          "text": "dfsr",
+          "category": "Study",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-10": [
+        {
+          "text": "sdgsdf",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-11": [
+        {
+          "text": "sdfasd",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-2": [
+        {
+          "text": "sdfasdf",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-12": [
+        {
+          "text": "dsfasfsadf",
+          "category": "Personal",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-19": [
+        {
+          "text": "sdfadfas",
+          "category": "Health",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-16": [
+        {
+          "text": "dsfgs",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-17": [
+        {
+          "text": "adfa",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-18": [
+        {
+          "text": "sdfsdfg",
+          "category": "Work",
+          "color": "#3b82f6"
+        }
+      ],
+      "2026-3-6": [
+        {
+          "text": "srserftg",
+          "category": "Study",
+          "color": "#ef4444"
+        }
+      ],
+      "2026-3-13": [
+        {
+          "text": "esrtser",
+          "category": "Health",
+          "color": "#22c55e"
+        }
+      ],
+      "2026-3-15": [],
+      "2026-3-31": [],
+      "2026-3-1": [
+        {
+          "text": "sdfgsdg",
+          "category": "Personal",
+          "color": "#ef4444",
+          "reminder": "12:01"
+        }
+      ]
+    },
+    "stop": {
+      "2026-2-3": [
+        ""
+      ]
+    }
+  },
+  "important": {
+    "mayank": {
+      "2026-3-10": true,
+      "2026-3-9": true,
+      "2026-3-11": true,
+      "2026-3-2": true,
+      "2026-3-12": true,
+      "2026-3-17": true,
+      "2026-3-20": true,
+      "2026-3-31": true
+    }
+  }
+}
